@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Home - {{ super() }}
+{% endblock %}
+
+{% block content %}
+  {% if not result %}
+  <div class="row">
+    <div class="col-12 mt-5 text-center">
+      <h1>Welcome to CryptoSentiment!</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center justify-content-center">
+      <form action="/search" method="GET" class="form-inline d-flex justify-content-center mb-2">
+        <div class="input-group">
+          <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search" required oninvalid="this.setCustomValidity('Please enter a cryptocurrency name.')" oninput="this.setCustomValidity('')">
+          <div class="input-group-append">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </div>
+        </div>
+      </form>
+      <div id="loading" class="d-none text-center mt-3">
+        <p>Our Vader tool is calculating. Please wait a few seconds...</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 mt-3">
+      <p>
+        Introducing CryptoSentiment, the cutting-edge crypto sentiment analysis app powered by our advanced VADER sentiment analysis engine. By meticulously processing news articles, social media posts, and expert opinions, CryptoSentiment delivers an accurate sentiment score for various cryptocurrencies within a range of -1 (most negative) to +1 (most positive). Explore the technical side of the market with our user-friendly interface, where you can search for your favorite cryptocurrencies and obtain real-time sentiment analysis. Make data-driven investment decisions by leveraging the precision of VADER sentiment analysis and staying informed about the latest trends in the dynamic world of digital currencies. Embrace the future of crypto investing with CryptoSentiment.
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Search result -->
+  {% if result %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <div class="row">
+    <div class="col-12 mt-5 text-center">
+      <h1>Welcome to CryptoSentiment!</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 mt-3">
+      <canvas id="pie-chart"></canvas>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-12 text-left">
+      <p>Results for: {{ result.query }}</p>
+    </div>
+  </div>
+  <hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+  <div class="row">
+    <div class="col-12 centered-col">
+      <span class="dot" style="background-color: #36354A;"></span>
+      <p>Compound Sentiment: {{ result.compound|round(2) }}</p>
+    </div>
+  </div>
+  <div class = "row">
+    <div class="col-8 mx-auto">
+      <p class="compound-p">Compound Sentiment. Compound sentiment is a single value (-1 to 1) representing overall sentiment derived from combining positive, negative, and neutral emotions.</p>
+
+    </div>
+  </div>
+  <hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+
+  <div class="row">
+    <div class="col-6 centered-col">
+      <span class="dot" style="background-color: #3AFFFC;"></span>
+      <p>POSITIVE</p>
+    </div>
+    <div class="col-6">
+      <p>{{ (result.positive * 100)|round(1) }}%</p>
+    </div>
+  </div>
+  <hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+
+  <div class="row">
+    <div class="col-6 centered-col">
+      <span class="dot" style="background-color: #008483;"></span>
+      <p>NEUTRAL</p>
+    </div>
+    <div class="col-6 text-center">
+      <p>{{ (result.neutral * 100)|round(1) }}%</p>
+    </div>
+  </div>
+
+
+  <hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+
+  <div class="row">
+    <div class="col-6 centered-col">
+      <span class="dot" style="background-color: #273D3D;"></span>
+      <p>NEGATIVE</p>
+    </div>
+    <div class="col-6">
+      <p>{{ (result.negative * 100)|round(1) }}%</p>
+    </div>
+  </div>
+  <hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+  <script>
+    var ctx = document.getElementById("pie-chart");
+    var myChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Positive', 'Neutral', 'Negative'],
+        datasets: [{
+          data: [
+            {{ result.positive }},
+            {{ result.neutral }},
+            {{ result.negative }}
+          ],
+          backgroundColor: [
+            'rgba(58, 255, 252, 0.5)',
+            'rgba(0, 132, 131, 0.5)',
+            'rgba(39, 61, 61, 0.5)'
+          ],
+          borderColor: [
+            'rgba(58, 255, 252, 0.5)',
+            'rgba(0, 132, 131, 0.5)',
+            'rgba(39, 61, 61, 0.5)'
+        ],
+          borderWidth: 1
+        
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false,
+          position: 'right'
+        },
+        title: {
+          display: true,
+          text: 'Sentiment Analysis'
+        }
+      }
+    });
+  </script>
+  {% endif %}
+{% endblock %}
+{% block extra_js %}
+<script>
+  document.querySelector('form').addEventListener('submit', function() {
+    document.getElementById('loading').classList.remove('d-none');
+  });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+<div class="row mt-3">
+  <div class="col-12">
+    <p>Compound Sentiment: {{ result.compound|round(2) }}</p>
+    <p>Positive Sentiment: {{ (result.positive * 100)|round(1) }}%</p>
+    <p>Neutral Sentiment: {{ (result.neutral * 100)|round(1) }}%</p>
+    <p>Negative Sentiment: {{ (result.negative * 100)|round(1) }}%</p>
+  </div>
+</div>
+
+<hr style="border: 1px solid rgba(245, 245, 245, 0.3);">
+
+<div class="row mt-3">
+  <div class="col-6">
+    <p>POSITIVE</p>
+  </div>
+  <div class="col-6">
+    <p>{{ (result.positive * 100)|round(1) }}%</p>
+  </div>
+</div>

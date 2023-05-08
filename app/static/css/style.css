@@ -1,0 +1,36 @@
+body {
+    background-color: #242C39;
+    color: #F5F5F5;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
+h1 {
+    margin: 59px auto 50px;
+    text-align: center;
+    border-radius: 0;
+}
+
+.dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .centered-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  p {
+    margin-bottom: 0;
+  }
+
+  .compound-p {
+    font-size: x-small;
+  }
